@@ -74,10 +74,18 @@ def get_docset_list():
         json.dump(docsets, f);
     return docsets
 
+def get_user_docset_list():
+    try:
+        data = urllib.request.urlopen(usercontribution_url)
+        docsets = json.loads(data.read())
+    except Exception as e:
+        print(e, file=sys.stderr)
+        print('failed to fetch user contributions', file=sys.stderr)
+        sys.exit(-1)
+    return docsets
 
 def get_valid_docset_names(docset_list):
     return [docset['name'] for docset in docset_list]
-
 
 def download_and_save(url, filename, show_progress=True):
     def progress(chunk_i, chunk_num, total_size):
@@ -113,4 +121,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    docsets = get_user_docset_list()
+    print(docsets[0])
+    #print(len(docsets[0]))
+    #main()

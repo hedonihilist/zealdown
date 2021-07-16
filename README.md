@@ -44,7 +44,7 @@ https://api.zealdocs.org/v1/docsets
 
 **用户贡献**
 
-用户贡献的docset可以在[这个网站](https://api.zealdocs.org/v1/docsets)
+用户贡献的docset可以在[这个网站](https://zealusercontributions.now.sh/)
 
 虽说有两个来源，但是最终都是从同一个域名下载，即`kapeli.com`，存放docset的服务器在不同的地区有不同的域名，下面是域名列表：
 
