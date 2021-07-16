@@ -6,13 +6,53 @@
 
 ## 使用方法
 
-TODO
+工具有四个subcommand，分别是:`search,list,download,install`
+
+### 查找docset
+
+```
+$ python zealdown.py search java
+$ python zealdown.py --user search java
+```
+
+### 列出所有docset
+
+```
+$ python zealdown.py list
+$ python zealdown.py --user list
+```
+
+### 下载docset
+
+```
+$ python zealdown.py download --dest /tmp Java_SE8 Java_SE9 ...
+$ python zealdown.py --user download Java_SE8 Java_SE9 ...
+```
+
+其中`--dest`指明存储的目录
+
+### 安装docset
+
+```
+$ python zealdown.py download --dest /tmp Java_SE8 Java_SE9 ...
+$ python zealdown.py --user download Java_SE8 Java_SE9 ...
+```
+
+其中`--dest`是Zeal存放docset的目录，可以在Zeal的Preference中找到。
+
+### 参数说明
+
+适用于所有subcommand的参数有：
+```
+--user 包括user contribution中的内容，默认未包括
+--no-cache 不缓存下载下来的docset列表，默认缓存
+```
 
 ## TODO
 
-- 根据网络情况，选择可访问的源
-- 搜索zealusercontent的docset
-- 指定目录，一键安装docset
+- ✅根据网络情况，选择可访问的源
+- ✅搜索zealusercontent的docset
+- ✅指定目录，一键安装docset
 - ✅输出zeal中的docset列表
 - ✅输出zeal中的docset的下载连接
 
