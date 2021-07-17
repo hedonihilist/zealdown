@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import base64
 import argparse
 import tarfile
 import requests
@@ -109,8 +110,8 @@ def get_user_docset_list(enable_cache):
 
 def download_and_save(url, filename, show_progress=True):
     print('downloading {}'.format(url))
-    def progress(chunk_i, chunk_num, total_size):
-        sys.stdout.write('\r{} [{}/{}]'.format(filename, chunk_i, chunk_num))
+    def progress(chunk_i, chunk_size, total_size):
+        sys.stdout.write('\r{} [{}/{}]'.format(filename, chunk_i*chunk_size, total_size))
         #print('%d/%d %d' % (chunk_i, chunk_num, total_size))
     urllib.request.urlretrieve(url, filename, progress)
 
@@ -137,6 +138,18 @@ def extract_docset(docset_tar_path, dest_path):
         for tarinfo in tarobj:
             tarobj.extract(tarinfo.name, dest_path)
 
+def save_icon_to_dir(docset, dest_dir):
+    if 'icon' in docset:
+        b64_str = docset['icon']
+        icon = base64.b64decode(b64_str.encode('utf8'))
+        with open(os.path.join(dest_dir, 'icon.png'), 'wb') as f:
+            f.write(icon)
+    if 'icon2x' in docset:
+        b64_str = docset['icon2x']
+        icon = base64.b64decode(b64_str.encode('utf8'))
+        with open(os.path.join(dest_dir, 'icon@2x.png'), 'wb') as f:
+            f.write(icon)
+
 def do_install(args):
     dict1 = get_docset_dict(zealdocsets)
     if args.user:
@@ -145,7 +158,6 @@ def do_install(args):
         if docset_name in dict1:
             docset = dict1[docset_name]
             dest_dir = os.path.expanduser(args.dest)
-            print(dest_dir)
             try:
                 print('Downloading "{}"'.format(docset_name))
                 tar_path = download_to_dir(docset, dest_dir)
@@ -153,6 +165,11 @@ def do_install(args):
                 extract_docset(tar_path, dest_dir)
                 # remove the downloaded tar 
                 os.remove(tar_path)
+                docset_dir = os.path.join(dest_dir, docset_name+'.docset')
+                # also, if there is no icon, try to save the icon in docset to file
+                if not os.path.exists(os.path.join(docset_dir, 'icon.png')) and \
+                        not os.path.exists(os.path.join(docset_dir, 'icon@2x.png')):
+                    save_icon_to_dir(docset, docset_dir)
                 print('"{}" installed'.format(docset_name))
             except Exception as e:
                 print('Error: {}'.format(e), file=sys.stderr)
