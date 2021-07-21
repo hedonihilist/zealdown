@@ -134,9 +134,12 @@ def do_search(args):
                 print_docset(docset)
 
 def extract_docset(docset_tar_path, dest_path):
+    top_dir = None
     with tarfile.open(docset_tar_path, 'r:gz') as tarobj:
+        top_dir = tarobj.members[0].name
         for tarinfo in tarobj:
             tarobj.extract(tarinfo.name, dest_path)
+    return top_dir
 
 def save_icon_to_dir(docset, dest_dir):
     if 'icon' in docset:
@@ -162,10 +165,10 @@ def do_install(args):
                 print('Downloading "{}"'.format(docset_name))
                 tar_path = download_to_dir(docset, dest_dir)
                 print('Extracting "{}"'.format(docset_name))
-                extract_docset(tar_path, dest_dir)
+                top_dir = extract_docset(tar_path, dest_dir)
                 # remove the downloaded tar 
                 os.remove(tar_path)
-                docset_dir = os.path.join(dest_dir, docset_name+'.docset')
+                docset_dir = os.path.join(dest_dir, top_dir)
                 # also, if there is no icon, try to save the icon in docset to file
                 if not os.path.exists(os.path.join(docset_dir, 'icon.png')) and \
                         not os.path.exists(os.path.join(docset_dir, 'icon@2x.png')):
